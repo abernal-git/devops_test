@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: devopsacrabernal093.azurecr.io/devops-app:v1
+        image: devopsacrabernal093.azurecr.io/devops-app:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
