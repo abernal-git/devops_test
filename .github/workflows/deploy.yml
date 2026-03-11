@@ -32,10 +32,15 @@ jobs:
             --resource-group devops-test-rg \
             --name devops-aks \
             --overwrite-existing
-    
+   
+
       - name: Deploy en Kubernetes
         run: |
-          kubectl set image deployment/devops-webapp \
-            app=devopsacrabernal093.azurecr.io/devops-app:latest
-          kubectl rollout restart deployment/devops-webapp
-          kubectl rollout status deployment/devops-webapp
+          if kubectl get deployment devops-webapp 2>/dev/null; then
+            kubectl set image deployment/devops-webapp \
+              app=devopsacrabernal093.azurecr.io/devops-app:latest
+            kubectl rollout restart deployment/devops-webapp
+          else
+            kubectl apply -f k8s/
+          fi
+          kubectl rollout status deployment/devops-webapp 
