@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devops-webapp
+  template:
+    metadata:
+      labels:
+        app: devops-webapp
+    spec:
+      containers:
+      - name: app
+        image: devopsacrabernal093.azurecr.io/devops-app:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
