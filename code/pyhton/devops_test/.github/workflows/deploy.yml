@@ -19,11 +19,10 @@ jobs:
 
       - name: Login al ACR
         run: az acr login --name devopsacrabernal093
-
+      
       - name: Build y Push imagen Docker
         run: |
           docker buildx build --platform linux/amd64 \
-            -t devopsacrabernal093.azurecr.io/devops-app:${{ github.sha }} \
             -t devopsacrabernal093.azurecr.io/devops-app:latest \
             --push .
 
