@@ -33,9 +33,10 @@ jobs:
             --resource-group devops-test-rg \
             --name devops-aks \
             --overwrite-existing
-
+    
       - name: Deploy en Kubernetes
         run: |
           kubectl set image deployment/devops-webapp \
-            app=devopsacrabernal093.azurecr.io/devops-app:${{ github.sha }}
+            app=devopsacrabernal093.azurecr.io/devops-app:latest
+          kubectl rollout restart deployment/devops-webapp
           kubectl rollout status deployment/devops-webapp
