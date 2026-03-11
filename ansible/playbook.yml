@@ -1,0 +1,35 @@
+---
+- name: Configurar entorno DevOps
+  hosts: local
+  tasks:
+
+    - name: Verificar que kubectl está instalado
+      command: kubectl version --client
+      register: kubectl_version
+
+    - name: Mostrar versión de kubectl
+      debug:
+        msg: "{{ kubectl_version.stdout }}"
+
+    - name: Configurar kubeconfig para AKS
+      command: >
+        az aks get-credentials
+        --resource-group devops-test-rg
+        --name devops-aks
+        --overwrite-existing
+
+    - name: Verificar conexión al cluster
+      command: kubectl get nodes
+      register: nodes_output
+
+    - name: Mostrar nodos del cluster
+      debug:
+        msg: "{{ nodes_output.stdout }}"
+
+    - name: Verificar pods corriendo
+      command: kubectl get pods
+      register: pods_output
+
+    - name: Mostrar pods
+      debug:
+        msg: "{{ pods_output.stdout }}"

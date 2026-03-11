@@ -1,0 +1,41 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Login a Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login al ACR
+        run: az acr login --name devopsacrabernal093
+      
+      - name: Build y Push imagen Docker
+        run: |
+          docker buildx build --platform linux/amd64 \
+            -t devopsacrabernal093.azurecr.io/devops-app:latest \
+            --push .
+
+      - name: Conectar kubectl a AKS
+        run: |
+          az aks get-credentials \
+            --resource-group devops-test-rg \
+            --name devops-aks \
+            --overwrite-existing
+    
+      - name: Deploy en Kubernetes
+        run: |
+          kubectl set image deployment/devops-webapp \
+            app=devopsacrabernal093.azurecr.io/devops-app:latest
+          kubectl rollout restart deployment/devops-webapp
+          kubectl rollout status deployment/devops-webapp
